@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -65,12 +66,86 @@ func InitialiseApp(name string, forceCreation bool) int {
 		log.Errorf("init failed. Unable to create src folder. Error: %v", err.Error())
 		return 1
 	}
-
-	err = generateFileFromTemplate(templates.SrcIndexTsxTemplate, filepath.Join(appPath, "src", "index.tsx"), struct {
-		AppName string
-	}{name})
+	err = os.MkdirAll(filepath.Join(appPath, "src/containers"), 0755)
 	if err != nil {
-		log.Errorf("init failed. Unable to generate src/index.tsx. Error: %v", err.Error())
+		log.Errorf("init failed. Unable to create src/containers folder. Error: %v", err.Error())
+		return 1
+	}
+	err = os.MkdirAll(filepath.Join(appPath, "src/components"), 0755)
+	if err != nil {
+		log.Errorf("init failed. Unable to create src/components folder. Error: %v", err.Error())
+		return 1
+	}
+	err = os.MkdirAll(filepath.Join(appPath, "src/reducers"), 0755)
+	if err != nil {
+		log.Errorf("init failed. Unable to create src/reducers folder. Error: %v", err.Error())
+		return 1
+	}
+	err = os.MkdirAll(filepath.Join(appPath, "src/interfaces"), 0755)
+	if err != nil {
+		log.Errorf("init failed. Unable to create src/interfaces folder. Error: %v", err.Error())
+		return 1
+	}
+	err = os.MkdirAll(filepath.Join(appPath, "src/sagas"), 0755)
+	if err != nil {
+		log.Errorf("init failed. Unable to create src/sagas folder. Error: %v", err.Error())
+		return 1
+	}
+	err = os.MkdirAll(filepath.Join(appPath, "src/actions"), 0755)
+	if err != nil {
+		log.Errorf("init failed. Unable to create src/actions folder. Error: %v", err.Error())
+		return 1
+	}
+	err = os.MkdirAll(filepath.Join(appPath, "src/models"), 0755)
+	if err != nil {
+		log.Errorf("init failed. Unable to create src/models folder. Error: %v", err.Error())
+		return 1
+	}
+	err = os.MkdirAll(filepath.Join(appPath, "src/html"), 0755)
+	if err != nil {
+		log.Errorf("init failed. Unable to create src/html folder. Error: %v", err.Error())
+		return 1
+	}
+
+	templateData := struct{ AppName string }{name}
+
+	if err = generateFileFromTemplate(templates.SrcIndexTsxTemplate, filepath.Join(appPath, "src", "index.tsx"), templateData); err != nil {
+		return 1
+	}
+
+	if err = generateFileFromTemplate(templates.SrcAppContainerTemplate, filepath.Join(appPath, "src", "containers", fmt.Sprintf("%v.ts", name)), templateData); err != nil {
+		return 1
+	}
+
+	if err = generateFileFromTemplate(templates.SrcAppComponentTemplate, filepath.Join(appPath, "src", "components", fmt.Sprintf("%v.tsx", name)), templateData); err != nil {
+		return 1
+	}
+
+	if err = generateFileFromTemplate(templates.SrcRootReducerTemplate, filepath.Join(appPath, "src", "reducers", "index.ts"), templateData); err != nil {
+		return 1
+	}
+
+	if err = generateFileFromTemplate(templates.SrcInterfaceWindow, filepath.Join(appPath, "src", "interfaces", "EnhancedWindow.ts"), templateData); err != nil {
+		return 1
+	}
+
+	if err = generateFileFromTemplate(templates.SrcInterfaceAction, filepath.Join(appPath, "src", "interfaces", "Action.ts"), templateData); err != nil {
+		return 1
+	}
+
+	if err = generateFileFromTemplate(templates.SrcSagaIndex, filepath.Join(appPath, "src", "sagas", "index.ts"), templateData); err != nil {
+		return 1
+	}
+
+	if err = generateFileFromTemplate(templates.SrcActionIndex, filepath.Join(appPath, "src", "actions", "index.ts"), templateData); err != nil {
+		return 1
+	}
+
+	if err = generateFileFromTemplate(templates.SrcModelServerConfig, filepath.Join(appPath, "src", "models", "ServerConfig.ts"), templateData); err != nil {
+		return 1
+	}
+
+	if err = generateFileFromTemplate(templates.SrcHtmlIndex, filepath.Join(appPath, "src", "html", "index.html"), templateData); err != nil {
 		return 1
 	}
 
@@ -80,11 +155,18 @@ func InitialiseApp(name string, forceCreation bool) int {
 func generateFileFromTemplate(templateString string, filepath string, values interface{}) error {
 	configTemplate, err := template.New("").Parse(templateString)
 	if err != nil {
+		log.Errorf("init failed. Unable to generate %v. Error: %v", filepath, err.Error())
 		return err
 	}
 
 	config := strings.Builder{}
 	configTemplate.Execute(&config, values)
 	err = ioutil.WriteFile(filepath, []byte(config.String()), 0644)
-	return err
+
+	if err != nil {
+		log.Errorf("init failed. Unable to generate %v. Error: %v", filepath, err.Error())
+		return err
+	}
+
+	return nil
 }

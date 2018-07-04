@@ -31,25 +31,16 @@ const initializeApp = (element: HTMLElement) => {
     middleware.push(logger);
   }
 
-  const persistConfig = {
-    key: "root",
-    storage,
-  };
-  const persistedReducer = persistReducer(persistConfig, rootReducer);
-
   const composeEnhancers = (window as EnhancedWindow).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const appStore = createStore(
-    persistedReducer,
+    rootReducer,
     composeEnhancers(applyMiddleware(...middleware)),
   );
-  const persistor = persistStore(appStore);
   sagaMiddleware.run(rootSaga);
 
   ReactDOM.render(
     <Provider store={ appStore }>
-      <PersistGate loading={null} persistor={persistor}>
-        <{{.AppName}} history={ history } />
-      </PersistGate>
+      <{{.AppName}} />
     </Provider>,
     element,
   );
