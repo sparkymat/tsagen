@@ -3,6 +3,9 @@ package templates
 const SrcAppContainerTemplate = `import { connect } from "react-redux";
 import {{.AppName}}View, { {{.AppName}}Props } from "../components/{{.AppName}}";
 import { {{.AppName}}State } from "../reducers";
+import { onAppInit } from "../actions";
+
+const ReactLifecycleComponent = require("react-lifecycle-component");
 
 interface StateProps {
 }
@@ -11,15 +14,22 @@ const mapStateToProps = (state: {{.AppName}}State) => ({
 });
 
 interface DispatchProps {
+	onAppInit(): void;
 }
 
-const mapDispatchToProps = (dipatch: any) => ({
+const mapDispatchToProps = (dispatch: any) => ({
+	onAppInit: () => dispatch( onAppInit() ),
 });
 
-const mergeProps = (stateProps: StateProps, dispatchProps: DispatchProps): {{.AppName}}Props => ({
+interface LifecycleProps {
+  componentDidMount(): void;
+}
+
+const mergeProps = (stateProps: StateProps, dispatchProps: DispatchProps): {{.AppName}}Props & LifecycleProps => ({
+	componentDidMount: dispatchProps.onAppInit,
 });
 
-const {{.AppName}} = connect(
+const {{.AppName}} = ReactLifecycleComponent.connectWithLifecycle(
 	mapStateToProps,
 	mapDispatchToProps,
 	mergeProps,

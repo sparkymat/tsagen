@@ -14,7 +14,7 @@ var plugins = [
 	new HtmlWebpackPlugin({title: "{{.AppTitle}}", template: "src/html/index.html"})
 ];
 
-plugins.push(new CleanWebpackPlugin(["dist/js/"], {allowExternal: true}));
+plugins.push(new CleanWebpackPlugin(["dist/"], {allowExternal: true}));
 if (isProd) {
     plugins.push(new UglifyJsPlugin());
     plugins.push(new HashedModuleIdsPlugin());
@@ -33,8 +33,8 @@ const config = {
    * the final bundled JavaScript file and where to store this file.
    */
   output: {
-    path: path.resolve(__dirname, "dist", "js"),
-    filename: isProd ? "{{.JsFileName}}-[chunkhash].js" : "{{.JsFileName}}-development.js"
+    path: path.resolve(__dirname, "dist"),
+    filename: isProd ? "js/{{.JsFileName}}-[chunkhash].js" : "js/{{.JsFileName}}-development.js"
   },
 
   /*
