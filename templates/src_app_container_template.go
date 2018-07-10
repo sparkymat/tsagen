@@ -10,14 +10,14 @@ const ReactLifecycleComponent = require("react-lifecycle-component");
 interface StateProps {
 }
 
-const mapStateToProps = (state: {{.AppName}}State) => ({
+const mapStateToProps = (state: {{.AppName}}State): StateProps => ({
 });
 
 interface DispatchProps {
 	onAppInit(): void;
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: any): DispatchProps => ({
 	onAppInit: () => dispatch( onAppInit() ),
 });
 

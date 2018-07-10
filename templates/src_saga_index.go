@@ -13,7 +13,7 @@ function* initialiseApp(action: Action) {
 }  
 
 function* onAppInit() {
-	yield takeEvery((action: Action) => action.type === ON_APP_INIT, initialiseApp);
+	yield takeEvery(ON_APP_INIT, initialiseApp);
 }  
 
 export default function* root() {

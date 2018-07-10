@@ -20,7 +20,7 @@ func InitialiseApp(name string, forceCreation bool) int {
 
 	currentPath, err := os.Getwd()
 	if err != nil {
-		log.Errorf("init failed with %V", err.Error())
+		log.Errorf("init failed with %v", err.Error())
 		return 1
 	}
 
