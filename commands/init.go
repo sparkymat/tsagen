@@ -51,7 +51,7 @@ func InitialiseApp(name string, forceCreation bool) int {
 		return 1
 	}
 
-	err = generateFileFromTemplate(templates.WebpackConfigTemplate, filepath.Join(appPath, "webpack.config.js"), struct {
+	err = generateFileFromTemplate(templates.WebpackConfig, filepath.Join(appPath, "webpack.config.js"), struct {
 		JsFileName string
 		AppTitle   string
 	}{jsFileName, appTitle})

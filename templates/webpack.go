@@ -1,6 +1,6 @@
 package templates
 
-const WebpackConfigTemplate = `const webpack = require("webpack");
+const WebpackConfig = `const webpack = require("webpack");
 const path = require("path");
 
 const HashedModuleIdsPlugin = require("hashed-module-id-plugin");
